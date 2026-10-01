@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AnaRequest — Mockup do MVP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F5FAF9;
+    --surface: #FFFFFF;
+    --sidebar: #0B2E33;
+    --sidebar-hover: #123F45;
+    --sidebar-active: #0F4750;
+    --sidebar-text: #AFCBCB;
+    --sidebar-text-active: #FFFFFF;
+    --ink: #142A2D;
+    --muted: #5C7A80;
+    --border: #E1ECEB;
+    --primary: #028090;
+    --primary-tint: #E3F2F1;
+    --accent: #02C39A;
+    --accent-tint: #E1F8F1;
+    --critical: #B3412C;
+    --critical-tint: #FBE9E5;
+    --warning: #A66A16;
+    --warning-tint: #FBF0DD;
+    --shadow: 0 1px 2px rgba(15, 43, 46, 0.06), 0 8px 24px rgba(15, 43, 46, 0.06);
+    --radius: 12px;
+    --font-head: 'Plus Jakarta Sans', Arial, sans-serif;
+    --font-body: 'Inter', Arial, sans-serif;
+  }
+
+  :root:not([data-theme="light"]) {
+    @media (prefers-color-scheme: dark) {
+      --bg: #0E1B1D;
+      --surface: #16282B;
+      --sidebar: #081A1C;
+      --sidebar-hover: #12282B;
+      --sidebar-active: #163B3F;
+      --ink: #E7F1F0;
+      --muted: #93ACB0;
+      --border: #223638;
+      --primary-tint: #123236;
+      --accent-tint: #113330;
+      --critical-tint: #3A211C;
+      --warning-tint: #3A2E14;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.35);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0E1B1D;
+    --surface: #16282B;
+    --sidebar: #081A1C;
+    --sidebar-hover: #12282B;
+    --sidebar-active: #163B3F;
+    --ink: #E7F1F0;
+    --muted: #93ACB0;
+    --border: #223638;
+    --primary-tint: #123236;
+    --accent-tint: #113330;
+    --critical-tint: #3A211C;
+    --warning-tint: #3A2E14;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.35);
+  }
+
+  * { box-sizing: border-box; }
+  html, body {
+    height: 100%;
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 14px;
+    -webkit-font-smoothing: antialiased;
+  }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  body {
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  h1, h2, h3, .brand, nav button { font-family: var(--font-head); }
+
+  button { font-family: inherit; }
+
+  .app {
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* ---------- Sidebar ---------- */
+  .sidebar {
+    width: 234px;
+    flex-shrink: 0;
+    background: var(--sidebar);
+    color: var(--sidebar-text);
+    display: flex;
+    flex-direction: column;
+    padding: 22px 16px;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 4px 8px 26px 8px;
+    color: #FFFFFF;
+  }
+  .brand-mark {
+    width: 30px; height: 30px; border-radius: 8px;
+    background: linear-gradient(135deg, var(--accent), var(--primary));
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .brand-mark svg { width: 17px; height: 17px; }
+  .brand-name { font-weight: 700; font-size: 16.5px; letter-spacing: -0.01em; }
+
+  nav { display: flex; flex-direction: column; gap: 2px; flex: 1; }
+  nav button {
+    display: flex; align-items: center; gap: 11px;
+    width: 100%; text-align: left; border: none; background: transparent;
+    color: var(--sidebar-text); font-size: 13.5px; font-weight: 600;
+    padding: 10px 12px; border-radius: 9px; cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+  nav button svg { width: 18px; height: 18px; flex-shrink: 0; opacity: 0.85; }
+  nav button:hover { background: var(--sidebar-hover); color: var(--sidebar-text-active); }
+  nav button.active { background: var(--sidebar-active); color: var(--sidebar-text-active); }
+  nav button.active svg { opacity: 1; }
+  .nav-badge {
+    margin-left: auto; background: var(--critical); color: #fff;
+    font-size: 11px; font-weight: 700; min-width: 18px; height: 18px;
+    border-radius: 9px; display: flex; align-items: center; justify-content: center;
+    padding: 0 5px;
+  }
+
+  .sidebar-footer {
+    border-top: 1px solid rgba(255,255,255,0.08);
+    padding-top: 14px; margin-top: 10px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .avatar {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--accent); color: #062824; font-weight: 700; font-size: 13px;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .sidebar-footer .who { line-height: 1.3; overflow: hidden; }
+  .sidebar-footer .who strong { display: block; color: #fff; font-size: 13px; font-weight: 600; }
+  .sidebar-footer .who span { font-size: 11.5px; color: var(--sidebar-text); }
+
+  /* ---------- Main ---------- */
+  main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 32px; border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    position: sticky; top: 0; z-index: 5;
+  }
+  .topbar h1 { margin: 0; font-size: 21px; font-weight: 700; letter-spacing: -0.01em; }
+  .topbar .subtitle { margin: 2px 0 0; color: var(--muted); font-size: 13px; }
+  .topbar-actions { display: flex; gap: 10px; align-items: center; }
+
+  .btn {
+    display: inline-flex; align-items: center; gap: 7px;
+    border-radius: 9px; border: 1px solid transparent;
+    font-size: 13.5px; font-weight: 600; cursor: pointer;
+    padding: 9px 15px; white-space: nowrap;
+  }
+  .btn svg { width: 15px; height: 15px; }
+  .btn-primary { background: var(--primary); color: #fff; }
+  .btn-primary:hover { background: #026f7d; }
+  .btn-ghost { background: transparent; color: var(--ink); border-color: var(--border); }
+  .btn-ghost:hover { background: var(--primary-tint); }
+
+  .content { padding: 28px 32px 60px; flex: 1; }
+
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  /* ---------- Stat cards ---------- */
+  .stats {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px; margin-bottom: 24px;
+  }
+  .stat-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 18px 20px;
+  }
+  .stat-card .label { color: var(--muted); font-size: 12.5px; font-weight: 600; margin-bottom: 8px; }
+  .stat-card .value { font-family: var(--font-head); font-size: 27px; font-weight: 800; font-variant-numeric: tabular-nums; }
+  .stat-card .value.critical { color: var(--critical); }
+  .stat-card .delta { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+  /* ---------- Panels / tables ---------- */
+  .panel {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+    overflow: hidden; margin-bottom: 24px;
+  }
+  .panel-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 20px; border-bottom: 1px solid var(--border);
+  }
+  .panel-head h2 { margin: 0; font-size: 15px; font-weight: 700; }
+  .panel-head .hint { font-size: 12.5px; color: var(--muted); margin-top: 2px; }
+
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; min-width: 560px; }
+  thead th {
+    text-align: left; font-size: 11px; font-weight: 700; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.04em;
+    padding: 10px 20px; border-bottom: 1px solid var(--border);
+    background: color-mix(in srgb, var(--surface) 92%, var(--ink) 4%);
+  }
+  tbody td {
+    padding: 13px 20px; border-bottom: 1px solid var(--border);
+    font-size: 13.5px; vertical-align: middle;
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover { background: color-mix(in srgb, var(--primary-tint) 55%, transparent); }
+  td.num { font-variant-numeric: tabular-nums; }
+  td.name { font-weight: 600; }
+  td.muted, .muted-text { color: var(--muted); }
+
+  .pill {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 999px;
+  }
+  .pill-critical { background: var(--critical-tint); color: var(--critical); }
+  .pill-warning { background: var(--warning-tint); color: var(--warning); }
+  .pill-ok { background: var(--accent-tint); color: #0C7A5C; }
+  .pill-off { background: color-mix(in srgb, var(--muted) 18%, transparent); color: var(--muted); }
+  .pill-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+  .icon-btn {
+    width: 30px; height: 30px; border-radius: 7px; border: 1px solid var(--border);
+    background: var(--surface); display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer; color: var(--muted);
+  }
+  .icon-btn:hover { background: var(--primary-tint); color: var(--primary); }
+  .icon-btn svg { width: 15px; height: 15px; }
+  .row-actions { display: flex; gap: 6px; }
+
+  /* ---------- Toolbar (search/filter) ---------- */
+  .toolbar { display: flex; gap: 10px; padding: 16px 20px; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+  .search {
+    flex: 1; min-width: 200px; display: flex; align-items: center; gap: 8px;
+    border: 1px solid var(--border); border-radius: 9px; padding: 8px 12px; color: var(--muted);
+  }
+  .search svg { width: 15px; height: 15px; flex-shrink: 0; }
+  .search input {
+    border: none; outline: none; background: transparent; font-size: 13.5px; color: var(--ink);
+    width: 100%; font-family: inherit;
+  }
+  select {
+    border: 1px solid var(--border); border-radius: 9px; padding: 8px 12px;
+    font-size: 13.5px; color: var(--ink); background: var(--surface); font-family: inherit;
+  }
+
+  /* ---------- Form (Movimentação / Parâmetros) ---------- */
+  .grid-2 { display: grid; grid-template-columns: 1.1fr 1.6fr; gap: 20px; align-items: start; }
+  .field { margin-bottom: 16px; }
+  .field label {
+    display: block; font-size: 12.5px; font-weight: 600; color: var(--muted); margin-bottom: 6px;
+  }
+  .field input, .field select, .field textarea {
+    width: 100%; border: 1px solid var(--border); border-radius: 9px;
+    padding: 10px 12px; font-size: 13.5px; font-family: inherit; color: var(--ink); background: var(--surface);
+  }
+  .field textarea { resize: vertical; min-height: 64px; }
+  .field .helper { font-size: 11.5px; color: var(--muted); margin-top: 5px; }
+
+  .toggle-group { display: flex; border: 1px solid var(--border); border-radius: 9px; overflow: hidden; }
+  .toggle-group button {
+    flex: 1; border: none; background: var(--surface); color: var(--muted); font-weight: 600;
+    font-size: 13px; padding: 9px 0; cursor: pointer; font-family: inherit;
+  }
+  .toggle-group button.on.entrada { background: var(--accent-tint); color: #0C7A5C; }
+  .toggle-group button.on.saida { background: var(--critical-tint); color: var(--critical); }
+
+  .form-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; }
+  .form-card h2 { margin: 0 0 4px; font-size: 15px; font-weight: 700; }
+  .form-card .hint { font-size: 12.5px; color: var(--muted); margin: 0 0 18px; }
+
+  /* ---------- Alerts screen ---------- */
+  .alert-card {
+    display: flex; gap: 14px; align-items: flex-start;
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 16px 18px; margin-bottom: 12px;
+  }
+  .alert-icon {
+    width: 34px; height: 34px; border-radius: 9px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .alert-icon.critical { background: var(--critical-tint); color: var(--critical); }
+  .alert-icon.warning { background: var(--warning-tint); color: var(--warning); }
+  .alert-icon svg { width: 17px; height: 17px; }
+  .alert-body { flex: 1; min-width: 0; }
+  .alert-body .top { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; }
+  .alert-body .title { font-weight: 700; font-size: 14px; }
+  .alert-body .time { font-size: 11.5px; color: var(--muted); white-space: nowrap; }
+  .alert-body p { margin: 4px 0 10px; font-size: 13px; color: var(--muted); }
+  .alert-actions { display: flex; gap: 8px; }
+  .link-btn {
+    background: none; border: none; font-family: inherit; font-size: 12.5px; font-weight: 700;
+    color: var(--primary); cursor: pointer; padding: 0;
+  }
+  .link-btn.muted { color: var(--muted); }
+
+  /* ---------- Params screen ---------- */
+  .param-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; margin-bottom: 18px; }
+  .param-card h3 { margin: 0 0 3px; font-size: 14.5px; font-weight: 700; }
+  .param-card .hint { font-size: 12.5px; color: var(--muted); margin: 0 0 18px; }
+  .param-row {
+    display: flex; align-items: center; justify-content: space-between; gap: 20px;
+    padding: 14px 0; border-top: 1px solid var(--border);
+  }
+  .param-row:first-of-type { border-top: none; padding-top: 0; }
+  .param-row .txt strong { display: block; font-size: 13.5px; font-weight: 600; }
+  .param-row .txt span { font-size: 12px; color: var(--muted); }
+  .param-input { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+  .param-input input {
+    width: 64px; text-align: center; border: 1px solid var(--border); border-radius: 8px;
+    padding: 8px 6px; font-size: 13.5px; font-family: inherit; font-variant-numeric: tabular-nums;
+  }
+  .param-input span { font-size: 12.5px; color: var(--muted); }
+
+  .switch { position: relative; width: 38px; height: 22px; flex-shrink: 0; }
+  .switch input { opacity: 0; width: 0; height: 0; }
+  .switch .track {
+    position: absolute; inset: 0; background: var(--border); border-radius: 999px; cursor: pointer; transition: background 0.15s;
+  }
+  .switch .track::after {
+    content: ""; position: absolute; width: 16px; height: 16px; border-radius: 50%;
+    background: #fff; top: 3px; left: 3px; transition: transform 0.15s;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.25);
+  }
+  .switch input:checked + .track { background: var(--accent); }
+  .switch input:checked + .track::after { transform: translateX(16px); }
+
+  .save-bar { display: flex; justify-content: flex-end; gap: 10px; }
+
+  /* ---------- Mobile ---------- */
+  @media (max-width: 760px) {
+    .app { flex-direction: column; }
+    .sidebar {
+      width: 100%; height: auto; position: sticky; top: 0; z-index: 20;
+      flex-direction: row; align-items: center; padding: 12px 14px; gap: 10px;
+      overflow-x: auto;
+    }
+    .brand { padding: 0; }
+    .brand-name { display: none; }
+    nav { flex-direction: row; flex: none; }
+    nav button span.label { display: none; }
+    nav button { padding: 9px; }
+    .sidebar-footer { display: none; }
+    .topbar { padding: 16px 18px; }
+    .content { padding: 20px 18px 48px; }
+    .grid-2 { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ===================== SIDEBAR ===================== -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#062824" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg>
+      </div>
+      <div class="brand-name">AnaRequest</div>
+    </div>
+
+    <nav>
+      <button class="nav-item active" data-screen="dashboard">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+        <span class="label">Visão geral</span>
+      </button>
+      <button class="nav-item" data-screen="produtos">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg>
+        <span class="label">Produtos</span>
+      </button>
+      <button class="nav-item" data-screen="movimentacao">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7h11l-3-3"/><path d="M18 7l-3 3"/><path d="M17 17H6l3 3"/><path d="M6 17l3-3"/></svg>
+        <span class="label">Movimentação</span>
+      </button>
+      <button class="nav-item" data-screen="alertas">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+        <span class="label">Alertas</span>
+        <span class="nav-badge">3</span>
+      </button>
+      <button class="nav-item" data-screen="parametros">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.65 1.65 0 004.6 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+        <span class="label">Parâmetros</span>
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="avatar">SR</div>
+      <div class="who">
+        <strong>Sara Rebeka</strong>
+        <span>Responsável</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ===================== MAIN ===================== -->
+  <main>
+
+    <!-- ---------- DASHBOARD ---------- -->
+    <section class="screen active" id="screen-dashboard">
+      <div class="topbar">
+        <div>
+          <h1>Visão geral</h1>
+          <p class="subtitle">Quinta-feira, 25 de setembro</p>
+        </div>
+        <div class="topbar-actions">
+          <button class="btn btn-ghost">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7h11l-3-3"/><path d="M18 7l-3 3"/><path d="M17 17H6l3 3"/><path d="M6 17l3-3"/></svg>
+            Registrar movimentação
+          </button>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="stats">
+          <div class="stat-card">
+            <div class="label">Produtos ativos</div>
+            <div class="value">42</div>
+            <div class="delta">6 categorias cadastradas</div>
+          </div>
+          <div class="stat-card">
+            <div class="label">Em risco de falta</div>
+            <div class="value critical">5</div>
+            <div class="delta">Previsão de até 7 dias</div>
+          </div>
+          <div class="stat-card">
+            <div class="label">Movimentações hoje</div>
+            <div class="value">18</div>
+            <div class="delta">12 saídas · 6 entradas</div>
+          </div>
+          <div class="stat-card">
+            <div class="label">Alertas não lidos</div>
+            <div class="value">3</div>
+            <div class="delta">Gerados nas últimas 24h</div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <div>
+              <h2>Produtos com risco de falta</h2>
+              <div class="hint">Previsão = estoque atual ÷ consumo médio diário</div>
+            </div>
+            <button class="link-btn">Ver todos os produtos</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Produto</th>
+                  <th>Categoria</th>
+                  <th>Estoque atual</th>
+                  <th>Consumo médio/dia</th>
+                  <th>Previsão</th>
+                  <th>Situação</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="name">Feijão 1kg</td>
+                  <td class="muted">Alimentos</td>
+                  <td class="num">6 un</td>
+                  <td class="num">2,1 un</td>
+                  <td class="num">3 dias</td>
+                  <td><span class="pill pill-critical"><span class="pill-dot"></span>Crítico</span></td>
+                </tr>
+                <tr>
+                  <td class="name">Leite Integral 1L</td>
+                  <td class="muted">Alimentos</td>
+                  <td class="num">14 un</td>
+                  <td class="num">2,8 un</td>
+                  <td class="num">5 dias</td>
+                  <td><span class="pill pill-warning"><span class="pill-dot"></span>Atenção</span></td>
+                </tr>
+                <tr>
+                  <td class="name">Detergente Neutro</td>
+                  <td class="muted">Limpeza</td>
+                  <td class="num">9 un</td>
+                  <td class="num">1,0 un</td>
+                  <td class="num">9 dias</td>
+                  <td><span class="pill pill-warning"><span class="pill-dot"></span>Atenção</span></td>
+                </tr>
+                <tr>
+                  <td class="name">Óleo de Soja 900ml</td>
+                  <td class="muted">Alimentos</td>
+                  <td class="num">4 un</td>
+                  <td class="num">1,6 un</td>
+                  <td class="num">2 dias</td>
+                  <td><span class="pill pill-critical"><span class="pill-dot"></span>Crítico</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <div><h2>Últimas movimentações</h2></div>
+            <button class="link-btn">Ver histórico completo</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>Data</th><th>Tipo</th><th>Produto</th><th>Quantidade</th><th>Usuário</th></tr>
+              </thead>
+              <tbody>
+                <tr><td class="muted">Hoje, 14:32</td><td><span class="pill pill-critical"><span class="pill-dot"></span>Saída</span></td><td class="name">Feijão 1kg</td><td class="num">2 un</td><td class="muted">Gabriel</td></tr>
+                <tr><td class="muted">Hoje, 11:05</td><td><span class="pill pill-ok"><span class="pill-dot"></span>Entrada</span></td><td class="name">Café Torrado 500g</td><td class="num">24 un</td><td class="muted">Sara Rebeka</td></tr>
+                <tr><td class="muted">Hoje, 09:47</td><td><span class="pill pill-critical"><span class="pill-dot"></span>Saída</span></td><td class="name">Óleo de Soja 900ml</td><td class="num">3 un</td><td class="muted">Gabriel</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- PRODUTOS ---------- -->
+    <section class="screen" id="screen-produtos">
+      <div class="topbar">
+        <div>
+          <h1>Produtos</h1>
+          <p class="subtitle">42 produtos cadastrados em 6 categorias</p>
+        </div>
+        <div class="topbar-actions">
+          <button class="btn btn-primary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+            Novo produto
+          </button>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="panel">
+          <div class="toolbar">
+            <div class="search">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.3-4.3"/></svg>
+              <input type="text" placeholder="Buscar por nome do produto" />
+            </div>
+            <select><option>Todas as categorias</option><option>Alimentos</option><option>Limpeza</option><option>Bebidas</option></select>
+            <select><option>Ativos</option><option>Inativos</option><option>Todos</option></select>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>Produto</th><th>Categoria</th><th>Unidade</th><th>Estoque atual</th><th>Estoque mínimo</th><th>Status</th><th></th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="name">Feijão 1kg</td><td class="muted">Alimentos</td><td class="muted">un</td>
+                  <td class="num">6</td><td class="num">10</td>
+                  <td><span class="pill pill-ok"><span class="pill-dot"></span>Ativo</span></td>
+                  <td><div class="row-actions">
+                    <button class="icon-btn" title="Editar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></svg></button>
+                    <button class="icon-btn" title="Inativar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/></svg></button>
+                  </div></td>
+                </tr>
+                <tr>
+                  <td class="name">Arroz 5kg</td><td class="muted">Alimentos</td><td class="muted">un</td>
+                  <td class="num">22</td><td class="num">8</td>
+                  <td><span class="pill pill-ok"><span class="pill-dot"></span>Ativo</span></td>
+                  <td><div class="row-actions">
+                    <button class="icon-btn" title="Editar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></svg></button>
+                    <button class="icon-btn" title="Inativar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/></svg></button>
+                  </div></td>
+                </tr>
+                <tr>
+                  <td class="name">Leite Integral 1L</td><td class="muted">Alimentos</td><td class="muted">un</td>
+                  <td class="num">14</td><td class="num">15</td>
+                  <td><span class="pill pill-ok"><span class="pill-dot"></span>Ativo</span></td>
+                  <td><div class="row-actions">
+                    <button class="icon-btn" title="Editar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></svg></button>
+                    <button class="icon-btn" title="Inativar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/></svg></button>
+                  </div></td>
+                </tr>
+                <tr>
+                  <td class="name">Papel Higiênico 4un</td><td class="muted">Limpeza</td><td class="muted">pct</td>
+                  <td class="num">0</td><td class="num">6</td>
+                  <td><span class="pill pill-off"><span class="pill-dot"></span>Inativo</span></td>
+                  <td><div class="row-actions">
+                    <button class="icon-btn" title="Editar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></svg></button>
+                    <button class="icon-btn" title="Reativar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></button>
+                  </div></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- MOVIMENTAÇÃO ---------- -->
+    <section class="screen" id="screen-movimentacao">
+      <div class="topbar">
+        <div>
+          <h1>Movimentação</h1>
+          <p class="subtitle">Registre entradas e saídas de produtos</p>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="grid-2">
+          <div class="form-card">
+            <h2>Nova movimentação</h2>
+            <p class="hint">Toda movimentação fica registrada com data e usuário responsável</p>
+
+            <div class="field">
+              <label>Tipo</label>
+              <div class="toggle-group">
+                <button type="button" class="on entrada">Entrada</button>
+                <button type="button">Saída</button>
+              </div>
+            </div>
+
+            <div class="field">
+              <label>Produto</label>
+              <select><option>Feijão 1kg — 6 un em estoque</option><option>Arroz 5kg — 22 un em estoque</option><option>Leite Integral 1L — 14 un em estoque</option></select>
+            </div>
+
+            <div class="field">
+              <label>Quantidade</label>
+              <input type="text" value="10" />
+            </div>
+
+            <div class="field">
+              <label>Data</label>
+              <input type="text" value="25/09/2026" />
+            </div>
+
+            <div class="field">
+              <label>Observação (opcional)</label>
+              <textarea placeholder="Ex.: recebido do fornecedor XYZ"></textarea>
+            </div>
+
+            <button class="btn btn-primary" style="width:100%; justify-content:center;">Registrar movimentação</button>
+          </div>
+
+          <div class="panel" style="margin-bottom:0;">
+            <div class="panel-head"><h2>Histórico recente</h2></div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Data</th><th>Tipo</th><th>Produto</th><th>Quantidade</th><th>Usuário</th></tr></thead>
+                <tbody>
+                  <tr><td class="muted">Hoje, 14:32</td><td><span class="pill pill-critical"><span class="pill-dot"></span>Saída</span></td><td class="name">Feijão 1kg</td><td class="num">2 un</td><td class="muted">Gabriel</td></tr>
+                  <tr><td class="muted">Hoje, 11:05</td><td><span class="pill pill-ok"><span class="pill-dot"></span>Entrada</span></td><td class="name">Café Torrado 500g</td><td class="num">24 un</td><td class="muted">Sara Rebeka</td></tr>
+                  <tr><td class="muted">Hoje, 09:47</td><td><span class="pill pill-critical"><span class="pill-dot"></span>Saída</span></td><td class="name">Óleo de Soja 900ml</td><td class="num">3 un</td><td class="muted">Gabriel</td></tr>
+                  <tr><td class="muted">Ontem, 18:20</td><td><span class="pill pill-ok"><span class="pill-dot"></span>Entrada</span></td><td class="name">Arroz 5kg</td><td class="num">20 un</td><td class="muted">Sara Rebeka</td></tr>
+                  <tr><td class="muted">Ontem, 16:03</td><td><span class="pill pill-critical"><span class="pill-dot"></span>Saída</span></td><td class="name">Leite Integral 1L</td><td class="num">4 un</td><td class="muted">Gabriel</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- ALERTAS ---------- -->
+    <section class="screen" id="screen-alertas">
+      <div class="topbar">
+        <div>
+          <h1>Alertas</h1>
+          <p class="subtitle">3 alertas gerados nas últimas 24 horas</p>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="alert-card">
+          <div class="alert-icon critical">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg>
+          </div>
+          <div class="alert-body">
+            <div class="top">
+              <div class="title">Feijão 1kg — risco de falta</div>
+              <div class="time">Hoje, 08:00</div>
+            </div>
+            <p>Estoque atual de 6 un, com previsão de duração de aproximadamente 3 dias.</p>
+            <div class="alert-actions">
+              <button class="link-btn">Ver produto</button>
+              <button class="link-btn muted">Marcar como resolvido</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="alert-card">
+          <div class="alert-icon critical">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg>
+          </div>
+          <div class="alert-body">
+            <div class="top">
+              <div class="title">Óleo de Soja 900ml — risco de falta</div>
+              <div class="time">Hoje, 08:00</div>
+            </div>
+            <p>Estoque atual de 4 un, com previsão de duração de aproximadamente 2 dias.</p>
+            <div class="alert-actions">
+              <button class="link-btn">Ver produto</button>
+              <button class="link-btn muted">Marcar como resolvido</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="alert-card">
+          <div class="alert-icon warning">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+          </div>
+          <div class="alert-body">
+            <div class="top">
+              <div class="title">Leite Integral 1L — atenção</div>
+              <div class="time">Ontem, 21:15</div>
+            </div>
+            <p>Estoque atual de 14 un, com previsão de duração de aproximadamente 5 dias.</p>
+            <div class="alert-actions">
+              <button class="link-btn">Ver produto</button>
+              <button class="link-btn muted">Marcar como resolvido</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- PARÂMETROS ---------- -->
+    <section class="screen" id="screen-parametros">
+      <div class="topbar">
+        <div>
+          <h1>Parâmetros</h1>
+          <p class="subtitle">Ajuste como a análise e os alertas funcionam</p>
+        </div>
+      </div>
+
+      <div class="content" style="max-width: 640px;">
+        <div class="param-card">
+          <h3>Análise de consumo</h3>
+          <p class="hint">Define a janela de dados usada para calcular o consumo médio</p>
+          <div class="param-row">
+            <div class="txt"><strong>Período de análise</strong><span>Quantos dias de histórico entram no cálculo</span></div>
+            <div class="param-input"><input type="text" value="30" /><span>dias</span></div>
+          </div>
+        </div>
+
+        <div class="param-card">
+          <h3>Alertas</h3>
+          <p class="hint">Define quando um produto passa a aparecer como risco</p>
+          <div class="param-row">
+            <div class="txt"><strong>Limiar de alerta</strong><span>Gerar alerta quando a previsão for menor que</span></div>
+            <div class="param-input"><input type="text" value="7" /><span>dias</span></div>
+          </div>
+          <div class="param-row">
+            <div class="txt"><strong>Estoque mínimo padrão</strong><span>Usado para novos produtos sem valor definido</span></div>
+            <div class="param-input"><input type="text" value="10" /><span>un</span></div>
+          </div>
+          <div class="param-row">
+            <div class="txt"><strong>Notificar apenas o Responsável</strong><span>Funcionários não recebem alertas de risco</span></div>
+            <label class="switch"><input type="checkbox" checked><span class="track"></span></label>
+          </div>
+        </div>
+
+        <div class="save-bar">
+          <button class="btn btn-ghost">Cancelar</button>
+          <button class="btn btn-primary">Salvar parâmetros</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+  (function () {
+    var navButtons = document.querySelectorAll('.nav-item');
+    var screens = document.querySelectorAll('.screen');
+
+    function show(name) {
+      screens.forEach(function (s) { s.classList.toggle('active', s.id === 'screen-' + name); });
+      navButtons.forEach(function (b) { b.classList.toggle('active', b.dataset.screen === name); });
+      try { localStorage.setItem('anarequest-mockup-screen', name); } catch (e) {}
+      window.scrollTo(0, 0);
+    }
+
+    navButtons.forEach(function (btn) {
+      btn.addEventListener('click', function () { show(btn.dataset.screen); });
+    });
+
+    var toggleGroup = document.querySelector('.toggle-group');
+    if (toggleGroup) {
+      var tButtons = toggleGroup.querySelectorAll('button');
+      tButtons.forEach(function (b, i) {
+        b.addEventListener('click', function () {
+          tButtons.forEach(function (o) { o.classList.remove('on', 'entrada', 'saida'); });
+          b.classList.add('on', i === 0 ? 'entrada' : 'saida');
+        });
+      });
+    }
+
+    var initial = 'dashboard';
+    try {
+      var saved = localStorage.getItem('anarequest-mockup-screen');
+      if (saved) initial = saved;
+    } catch (e) {}
+    show(initial);
+  })();
+</script>
+</body>
+</html>
